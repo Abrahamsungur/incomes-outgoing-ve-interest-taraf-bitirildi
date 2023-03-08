@@ -17,7 +17,7 @@ const account1 = {
 };
 
 const account2 = {
-  owner: 'Jessica Davis',
+  owner: 'ibrahim sungur',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
@@ -82,7 +82,7 @@ const displayMovements = (movements) => {
   });
 };
 
-displayMovements(account1.movements);
+// displayMovements(account1.movements);
 
 const calcDisplayBalance = (movements)=>{
   const balance = movements.reduce((acc,mov)=> acc+mov,0);
@@ -91,29 +91,29 @@ const calcDisplayBalance = (movements)=>{
 
 }
 
-calcDisplayBalance(account1.movements);
+// calcDisplayBalance(account1.movements);
 
-const calcDisplaySummary = (movements)=>{
-  const incomes = movements
+const calcDisplaySummary = (acc)=>{
+  const incomes = acc.movements
   .filter(mov => mov>0)
   .reduce((rec,mov) => rec+mov ,0);
   labelSumIn.textContent= `${incomes}€`;
-  const outgoings = movements
+  const outgoings = acc.movements
   .filter(mov => mov <0)
   .reduce((rec,mov) => rec+mov,0)
 
   labelSumOut.textContent = `${Math.abs(outgoings)}€`;
 
-  const interest = movements
+  const interest = acc.movements
              .filter(mov => mov > 0)
-             .map(deposit => (deposit * 1.2)/100)
+             .map(deposit => (deposit * acc.interestRate)/100)
              .reduce((acc,int)=> acc + int,0 );
   labelSumInterest.textContent = `${interest}€`;
 
 }
 
-calcDisplaySummary(account1.movements);
-console.log(calcDisplaySummary(account1.movements));
+// calcDisplaySummary(account1.movements);
+
 
 const createUsernames = (accs)=>{
   accs.forEach((acc)=>{
@@ -126,6 +126,40 @@ const createUsernames = (accs)=>{
 }
 
 createUsernames(accounts);
+
+//Event handler
+
+let currentAccount ;
+
+btnLogin.addEventListener('click', (event)=>{
+
+  //Prevent form submitting
+  event.preventDefault();
+
+  currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
+    
+  if(currentAccount?.pin === Number(inputLoginPin.value)){
+    
+    // Display UI and message
+    labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`;
+
+    //Clear input fields
+    inputLoginUsername.value = inputLoginPin.value ='';
+    inputLoginPin.blur();
+
+    containerApp.style.opacity = 100;
+    //Display movements
+
+    displayMovements(currentAccount.movements);
+    // Display balance
+    calcDisplayBalance(currentAccount.movements);
+
+    //Display summary
+    calcDisplaySummary(currentAccount);
+  }
+
+
+});
 
 
 
