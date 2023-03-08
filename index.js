@@ -126,6 +126,17 @@ const createUsernames = (accs)=>{
 
 createUsernames(accounts);
 
+const updateUI = (currentAccount)=> {
+ 
+  //Display movements
+  displayMovements(currentAccount);
+  // Display balance
+  calcDisplayBalance(currentAccount);
+
+  //Display summary
+  calcDisplaySummary(currentAccount);
+}
+
 //Event handler
 
 let currentAccount ;
@@ -147,28 +158,38 @@ btnLogin.addEventListener('click', (event)=>{
     inputLoginPin.blur();
 
     containerApp.style.opacity = 100;
-    //Display movements
 
-    displayMovements(currentAccount);
-    // Display balance
-    calcDisplayBalance(currentAccount);
 
-    //Display summary
-    calcDisplaySummary(currentAccount);
-  }
+      updateUI(currentAccount);
+  
+   }
 
 });
+
 
 btnTransfer.addEventListener('click',(event)=>{
 
   event.preventDefault();
   const amount = Number(inputTransferAmount.value);
   const receiverAcc = accounts.find( acc => acc.username === inputTransferTo.value);
-  receiverAcc.movements.push(amount);
+  
+  if(amount > 0 && receiverAcc && currentAccount.balance >= amount &&
+     (receiverAcc?.username !== currentAccount.username)){
+     currentAccount.movements.push(-amount);
+     receiverAcc.movements.push(amount);
+
+     
+     updateUI(currentAccount);
+  }else{
+    console.log('Transfer invalid');
+  }
+
+  
+
   //Clear inputs fields
   inputTransferAmount.value=inputTransferTo.value='';
 
-  console.log('receiverAcc',receiverAcc);
+  //console.log('receiverAcc',receiverAcc);
 })
 
 
