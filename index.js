@@ -69,8 +69,8 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 // Functions
 
-const displayMovements = (movements) => {
-  movements.forEach((mov, i) => {
+const displayMovements = (acc) => {
+  acc.movements.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
       <div class="movements__row">
@@ -84,10 +84,9 @@ const displayMovements = (movements) => {
 
 // displayMovements(account1.movements);
 
-const calcDisplayBalance = (movements)=>{
-  const balance = movements.reduce((acc,mov)=> acc+mov,0);
- 
-  labelBalance.textContent = `${balance} EUR`;
+const calcDisplayBalance = (acc)=>{
+   acc.balance = acc.movements.reduce((acc,mov)=> acc+mov,0); 
+  labelBalance.textContent = `${acc.balance} EUR`;
 
 }
 
@@ -150,18 +149,31 @@ btnLogin.addEventListener('click', (event)=>{
     containerApp.style.opacity = 100;
     //Display movements
 
-    displayMovements(currentAccount.movements);
+    displayMovements(currentAccount);
     // Display balance
-    calcDisplayBalance(currentAccount.movements);
+    calcDisplayBalance(currentAccount);
 
     //Display summary
     calcDisplaySummary(currentAccount);
   }
 
-
 });
 
+btnTransfer.addEventListener('click',(event)=>{
 
+  event.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find( acc => acc.username === inputTransferTo.value);
+  receiverAcc.movements.push(amount);
+  //Clear inputs fields
+  inputTransferAmount.value=inputTransferTo.value='';
+
+  console.log('receiverAcc',receiverAcc);
+})
+
+
+
+/////////////////////////////////////////////////////////////////
 
  const movements= [200, 450, -400, 3000, -650, -130, 70, 1300],
 
