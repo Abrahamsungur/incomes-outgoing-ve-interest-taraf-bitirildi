@@ -190,7 +190,43 @@ btnTransfer.addEventListener('click',(event)=>{
   inputTransferAmount.value=inputTransferTo.value='';
 
   //console.log('receiverAcc',receiverAcc);
-})
+});
+
+btnLoan.addEventListener('click',(e)=>{
+  e.preventDefault();
+
+  const amount  = Number(inputLoanAmount.value);
+  console.log(currentAccount.movements.some(mov => mov >= amount*0.1));
+
+  if(amount> 0 && currentAccount.movements.some(mov => mov >= amount*0.1)){
+    currentAccount.movements.push(amount);
+         
+    updateUI(currentAccount);
+
+  }
+});
+
+
+btnClose.addEventListener('click', (e)=>{
+  e.preventDefault();
+
+  if(currentAccount.username === inputCloseUsername.value && 
+    currentAccount?.pin === Number(inputClosePin.value)){
+    // accounts.slice(closeAccount);
+    let index = accounts.findIndex( acc => acc.username === currentAccount.username);
+    accounts.splice(index,1);
+    
+    containerApp.style.opacity=0;
+      // Display UI and message
+      labelWelcome.textContent = `login in to get stared`;
+  }
+
+
+  
+});
+
+
+
 
 
 
@@ -223,4 +259,3 @@ const totalDepositsUsd = movements
 .map(mov => mov*eurToUsd)
 .reduce((acc,mov)=> acc+mov,0);
 
-console.log(totalDepositsUsd);
